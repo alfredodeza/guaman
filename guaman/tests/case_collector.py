@@ -1,6 +1,6 @@
 from mock import patch
 import os
-from guaman.collector import WantedFiles, Uncompress
+from guaman.collector import WantedFiles
 
 
 describe "path collection":
