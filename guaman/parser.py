@@ -2,16 +2,17 @@ from cStringIO import StringIO
 import csv
 import hashlib
 import re
-import sys
 import tarfile
 
 from guaman.collector import WantedFiles
+from guaman.database import Database
 
 
 
 class ParseLines(object):
 
     def __init__(self, fileobject=None):
+        csv.field_size_limit(1000000000)
         self.fileobject = fileobject or StringIO()
         self.csv = csv.reader(self.fileobject)
 
@@ -52,19 +53,18 @@ class ParseLines(object):
 
         if not query:
             return
-
-        return {
-                'hash'      : self.create_hash(query),
-                'timestamp' : timestamp,
-                'user'      : row[1].lower(),
-                'db'        : row[2].lower(),
-                'open'      : row[7].lower(),
-                'status'    : row[11].lower(),
-                'ecode'     : row[12].lower(),
-                'error'     : error,
-                'duration'  : duration,
-                'query'     : query,
-        }
+        return (
+                self.create_hash(query), # hash
+                timestamp,               # timestamp
+                row[1].lower(),          # user
+                row[2].lower(),          # db
+                row[7].lower(),          # open
+                row[11].lower(),         # status
+                row[12].lower(),         # ecode
+                error,                   # error
+                duration,                # duration
+                query,                   # query
+        )
 
 
     def __iter__(self):
@@ -72,3 +72,12 @@ class ParseLines(object):
             converted = self.convert_single_line(row)
             if converted:
                 yield converted
+
+
+def importer(path):
+    db = Database('/tmp/importer.db')
+    files = WantedFiles(path)
+
+    for _file in files:
+        for row in ParseLines(open(_file)):
+            db.insert(*row)
