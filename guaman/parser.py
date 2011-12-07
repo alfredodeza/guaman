@@ -1,62 +1,72 @@
+from cStringIO import StringIO
 import csv
-import os
 import re
 import sys
-import tempdir
+import tarfile
+
+from guaman.collector import WantedFiles
 
 
-class WantedFiles(list):
-    """
-    If a directory is given as input, make sure we aggregate CSV files only
-    but look for them all. 
-    If there are compressed files and the options tell us to go for them too
-    uncompress them properly and lurk for CSV files there too.
-    """
 
-    def __init__(self, path):
-        self.path = path
-        self.compressed_files = []
-        self.valid_csv_file = re.compile(r'[_a-zA-Z0-9]\w*\.csv$', re.IGNORECASE)
-        self.valid_compressed_file = re.compile(r'[_a-z-A-Z0-9]+\.(tar|tar.gz|zip|tgz|bz2)$', re.IGNORECASE)
-        self._collect()
+class ParseLines(object):
 
-    def file_is_valid(self, path):
-        if os.path.isfile(path) and self.valid_csv_file.match(path):
-            return True
-        return False
+    def __init__(self, fileobject=None):
+        self.fileobject = fileobject or StringIO()
+        self.csv = csv.reader(self.fileobject)
 
-    def _collect(self):
-        if self.file_is_valid(self.path):
-            self.append(self.path)
+    def get_timestamp(self, row):
+        datere = re.compile('(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})')
+        datematch = datere.search(row[0])
+        if datematch is None:
+            return ''
+        return datematch.group(1)
+
+
+    def get_duration(self, row):
+        duration_re  = re.compile('duration: (\d+).(\d+)')
+        duration_match = duration_re.search(row[13])
+
+        if duration_match:
+            return int(duration_match.group(1))
+        return 0
+
+
+
+    def convert_single_line(self, row):
+        statement_re = re.compile('statement: (.*)')
+
+        duration  = self.get_duration(row)
+        timestamp = self.get_timestamp(row)
+        m = statement_re.search(row[13])
+
+        if m is None:
+            query = row[19].lower()
+            error = row[13].lower()
+        else:
+            query = m.group(1).lower()
+            error = ''
+
+        if not query:
             return
 
-        # Local is faster
-        walk = os.walk
-        join = os.path.join
-        path = self.path
-        levels_deep = 0
-
-        for root, dirs, files in walk(path):
-            levels_deep += 1
-
-            # Stop digging down after 3 levels down
-            if levels_deep > 2:
-                continue
-            for item in files:
-                absolute_path = join(root, item)
-                if not self.valid_csv_file.match(item):
-                    continue
-                self.append(absolute_path)
+        return {
+                'tstamp'   : timestamp,
+                'user'     : row[1].lower(),
+                'db'       : row[2].lower(),
+                'op'       : row[7].lower(),
+                'status'   : row[11].lower(),
+                'ecode'    : row[12].lower(),
+                'duration' : duration,
+                'query'    : query,
+                'error'    : error
+        }
 
 
-class Uncompress(list):
-
-    def __init__(self, paths=[]):
-        self.paths = paths
-        self._get_uncompressed()
-
-    def _get_uncompressed(self):
-        pass
+    def __iter__(self):
+        for row in self.csv:
+            converted = self.convert_single_line(row)
+            if converted:
+                yield converted
 
 
 class dblog(object):
