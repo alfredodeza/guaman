@@ -1,3 +1,4 @@
+import hashlib
 from guaman.parser import ParseLines
 
 
@@ -14,16 +15,18 @@ describe "parsing csv lines":
     it "returns a dict with my query if found":
         self.csv_rows[13] = "duration: 15.0 ms  statement: SELECT * FROM foo"
         result = self.parser.convert_single_line(self.csv_rows)
+        query = 'select * from foo'
         assert result != None
-        assert result.get('query')    == 'select * from foo'
-        assert result.get('tstamp')   == ''
-        assert result.get('user')     == ''
-        assert result.get('status')   == ''
-        assert result.get('ecode')    == ''
-        assert result.get('duration') == 15
-        assert result.get('error')    == ''
-        assert result.get('db')       == ''
-        assert result.get('op')       == ''
+        assert result.get('query')     == query
+        assert result.get('timestamp') == ''
+        assert result.get('user')      == ''
+        assert result.get('status')    == ''
+        assert result.get('ecode')     == ''
+        assert result.get('duration')  == 15
+        assert result.get('error')     == ''
+        assert result.get('db')        == ''
+        assert result.get('open')      == ''
+        assert result.get('hash')      == hashlib.sha256(query).hexdigest()
 
     it "returns the date if it matches the regex":
         self.csv_rows[0] = '1999-22-01 11:11:11'

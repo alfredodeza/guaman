@@ -24,5 +24,3 @@ describe "path collection":
         with patch('guaman.collector.os.path.isfile'):
             files = WantedFiles('/bar/foo.csv')
             assert files[0] == '/bar/foo.csv'
-
-
