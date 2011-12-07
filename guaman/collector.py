@@ -1,3 +1,4 @@
+import logging
 import os
 
 
@@ -20,7 +21,9 @@ class WantedFiles(list):
         return False
 
     def _collect(self):
+        logging.debug("Collecting file(s) in: %s" % self.path)
         if self.file_is_valid():
+            logging.info("Using a single path for import: %s" % self.path)
             self.append(self.path)
             return
 
@@ -33,4 +36,5 @@ class WantedFiles(list):
             for item in files:
                 if item.endswith(self.valid_endings):
                     absolute_path = join(root, item)
+                    logging.debug("Collected file path: %s" % absolute_path)
                     self.append(absolute_path)
