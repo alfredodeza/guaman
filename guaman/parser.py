@@ -1,6 +1,7 @@
 from cStringIO import StringIO
 import csv
 import hashlib
+import logging
 import re
 import tarfile
 
@@ -52,7 +53,9 @@ class ParseLines(object):
             error = ''
 
         if not query:
+            logging.debug("row with no query found, skipping")
             return
+
         return (
                 self.create_hash(query), # hash
                 timestamp,               # timestamp
@@ -75,9 +78,16 @@ class ParseLines(object):
 
 
 def importer(path):
+    # FIXME: Location of the database has to be a default one
     db = Database('/tmp/importer.db')
     files = WantedFiles(path)
-
+    count = 0
     for _file in files:
+        logging.info("parsing file %s" % _file)
+        file_row_count = 0
         for row in ParseLines(open(_file)):
+            count += 1
+            file_row_count += 1
             db.insert(*row)
+        logging.info("Inserted %s rows into database" % file_row_count)
+    logging.info("Total rows inserted at import: %s" % count)
