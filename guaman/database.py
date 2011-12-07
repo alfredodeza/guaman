@@ -1,7 +1,7 @@
 import sqlite3
 
 TABLES = "('hash', 'timestamp', 'user', 'db', 'open', 'status', 'ecode', 'error', 'duration', 'query')"
-SCHEMA = """CREATE TABLE IF NOT EXISTS logs (id PRIMARY KEY, hash, timestamp, user, db, open, status, ecode, error, duration, query)"""
+SCHEMA = """CREATE TABLE IF NOT EXISTS logs (id INTEGER PRIMARY KEY, hash, timestamp, user, db, open, status, ecode, error, duration, query)"""
 
 
 class Database(dict):
@@ -19,6 +19,7 @@ class Database(dict):
 
     def _set_database(self):
         self.conn.row_factory = sqlite3.Row
+        self.conn.text_factory = str
         self.conn.execute(SCHEMA)
 
     def insert(self, *a):

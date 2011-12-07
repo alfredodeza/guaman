@@ -11,6 +11,9 @@ class Commands(object):
     def parse_args(self, argv):
         parser = argparse.ArgumentParser(add_help=True, description='A PostgreSQL query analyzer')
         parser.add_argument('--import', action='store', dest='import_path', help='Path to log directory or csv file')
-        if not argv:
-            parser.print_help()
-        parser.parse_args(argv)
+        results = parser.parse_args(argv)
+
+        if results.import_path:
+            from guaman.parser import importer
+            importer(results.import_path)
+            print "All imported"
