@@ -1,5 +1,6 @@
 from cStringIO import StringIO
 import csv
+import hashlib
 import re
 import sys
 import tarfile
@@ -31,6 +32,9 @@ class ParseLines(object):
         return 0
 
 
+    def create_hash(self, query):
+        return hashlib.sha256(query).hexdigest()
+
 
     def convert_single_line(self, row):
         statement_re = re.compile('statement: (.*)')
@@ -50,15 +54,16 @@ class ParseLines(object):
             return
 
         return {
-                'tstamp'   : timestamp,
-                'user'     : row[1].lower(),
-                'db'       : row[2].lower(),
-                'op'       : row[7].lower(),
-                'status'   : row[11].lower(),
-                'ecode'    : row[12].lower(),
-                'duration' : duration,
-                'query'    : query,
-                'error'    : error
+                'hash'      : self.create_hash(query),
+                'timestamp' : timestamp,
+                'user'      : row[1].lower(),
+                'db'        : row[2].lower(),
+                'open'      : row[7].lower(),
+                'status'    : row[11].lower(),
+                'ecode'     : row[12].lower(),
+                'error'     : error,
+                'duration'  : duration,
+                'query'     : query,
         }
 
 
