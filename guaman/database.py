@@ -1,7 +1,7 @@
 import sqlite3
 
-TABLES = "('hash', 'timestamp', 'user', 'db', 'op', 'status', 'ecode', 'error', 'duration', 'rawquery', 'query')"
-SCHEMA = """CREATE TABLE IF NOT EXISTS logs (hash PRIMARY KEY, timestamp, user, db, op, status, ecode, error, duration, rawquery, query)"""
+TABLES = "('hash', 'timestamp', 'user', 'db', 'open', 'status', 'ecode', 'error', 'duration', 'query')"
+SCHEMA = """CREATE TABLE IF NOT EXISTS logs (id PRIMARY KEY, hash, timestamp, user, db, open, status, ecode, error, duration, query)"""
 
 
 class Database(dict):
@@ -14,7 +14,7 @@ class Database(dict):
 
         # Some default values
         self.select_value  = "SELECT value FROM %s WHERE key= ?" % self.table
-        self.insert_values = "INSERT INTO %s %s VALUES (?,?,?,?,?,?,?,?,?,?,?)" % (self.table, TABLES)
+        self.insert_values = "INSERT INTO %s %s VALUES (?,?,?,?,?,?,?,?,?,?)" % (self.table, TABLES)
         self.select_all    = "SELECT * from %s" % self.table
 
     def _set_database(self):
