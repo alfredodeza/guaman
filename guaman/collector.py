@@ -11,11 +11,11 @@ class WantedFiles(list):
 
     def __init__(self, path):
         self.path = path
-        self.compressed_files = []
+        self.valid_endings = ('.csv', '.tar.gz', '.bz2', '.tar')
         self._collect()
 
     def file_is_valid(self):
-        if os.path.isfile(self.path) and self.path.endswith('.csv'):
+        if os.path.isfile(self.path) and self.path.endswith(self.valid_endings):
             return True
         return False
 
@@ -31,6 +31,6 @@ class WantedFiles(list):
 
         for root, dirs, files in walk(path):
             for item in files:
-                if item.endswith('.csv'):
+                if item.endswith(self.valid_endings):
                     absolute_path = join(root, item)
                     self.append(absolute_path)
