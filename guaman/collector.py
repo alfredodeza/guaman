@@ -12,7 +12,7 @@ class WantedFiles(list):
 
     def __init__(self, path):
         self.path = path
-        self.valid_endings = ('.csv', '.tar.gz', '.bz2', '.tar')
+        self.valid_endings = ('.csv')
         self._collect()
 
     def file_is_valid(self):
