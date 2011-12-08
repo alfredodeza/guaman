@@ -1,15 +1,28 @@
-import argparse
+"""
+guaman: A PostgreSQL query analizer.
+
+Import options:
+    -i, --import        Specify a directory or a path to import CSV log files
+
+Reporting options:
+    report              Reporting sub-command
+
+"""
+
 import sys
 import logging
 
 from guaman.parser import importer
+from guaman.argopts import ArgOpts
+
+__version__ = '0.0.1'
 
 class Commands(object):
 
     def __init__(self, argv=None, parse=True, test=False):
         self.argv = argv or sys.argv
         if parse:
-            self.parse_args(argv)
+            self.parse_args(self.argv)
 
     def set_logging(self, level=logging.INFO):
         levels = {
@@ -27,13 +40,18 @@ class Commands(object):
 
 
     def parse_args(self, argv):
-        parser = argparse.ArgumentParser(add_help=True, description='A PostgreSQL query analyzer')
-        parser.add_argument('--import', action='store', dest='import_path', help='Path to log directory or csv file')
-        parser.add_argument('--logging', action='store', default='INFO', help='Set the verbosity of the script')
-        results = parser.parse_args(argv)
+        options = ['--import', ['--logging-level', '--verbosity'], 'report']
+        args    = ArgOpts(options)
 
-        self.set_logging(results.logging)
+        # Help and Version
+        args.catch_help    = __doc__
+        args.catch_version = "guaman version %s" % __version__
+        args.parse_args(argv)
 
-        if results.import_path:
-            importer(results.import_path)
+        # Set the logging level
+        log_level = args.get('--logging-level', 'INFO')
+        self.set_logging(log_level)
+
+        if args.get('--import'):
+            importer(args['--import'])
             logging.info('All CSV files successfully imported')
