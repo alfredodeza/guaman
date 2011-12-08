@@ -1,5 +1,8 @@
 """
-guaman: A PostgreSQL query analizer.
+guaman: 
+
+Control options:
+    --logging-level     What level of logging is desired, defaults to `info`
 
 Import options:
     -i, --import        Specify a directory or a path to import CSV log files
@@ -14,6 +17,7 @@ import logging
 
 from guaman.parser import importer
 from guaman.argopts import ArgOpts
+from guaman.utils import elephant
 
 __version__ = '0.0.1'
 
@@ -26,25 +30,26 @@ class Commands(object):
 
     def set_logging(self, level=logging.INFO):
         levels = {
-                'INFO'     : logging.INFO,
-                'DEBUG'    : logging.DEBUG,
-                'WARNING'  : logging.WARNING,
-                'CRITICAL' : logging.CRITICAL
+                  'INFO'     : logging.INFO,
+                  'DEBUG'    : logging.DEBUG,
+                  'WARNING'  : logging.WARNING,
+                  'CRITICAL' : logging.CRITICAL
         }
+
         level = levels.get(level.upper(), logging.INFO)
 
         logging.basicConfig(
-                level    = level,
-                format   = '%(levelname)s %(message)s',
+                level  = level,
+                format = '%(levelname)s %(message)s',
         )
 
 
     def parse_args(self, argv):
-        options = ['--import', ['--logging-level', '--verbosity'], 'report']
+        options = ['--import', '--logging-level', 'report']
         args    = ArgOpts(options)
 
         # Help and Version
-        args.catch_help    = __doc__
+        args.catch_help    = "%s\n\n %s" % (elephant, __doc__ )
         args.catch_version = "guaman version %s" % __version__
         args.parse_args(argv)
 
