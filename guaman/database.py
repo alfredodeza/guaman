@@ -11,6 +11,7 @@ class Database(dict):
         self.db_filename = path
         self.conn        = sqlite3.connect(self.db_filename)
         self._set_database()
+        self.c           = self.conn.cursor()
 
         # Some default values
         self.select_value  = "SELECT value FROM %s WHERE key= ?" % self.table
@@ -18,7 +19,6 @@ class Database(dict):
         self.select_all    = "SELECT * from %s" % self.table
 
     def _set_database(self):
-        self.conn.row_factory  = sqlite3.Row
         self.conn.text_factory = str
         self.conn.execute(SCHEMA)
 
@@ -37,3 +37,50 @@ class Database(dict):
 
     def _close(self):
         self.conn.close()
+
+
+
+class DbReport(Database):
+    """
+    Get your reports from queries here. It might be offsetting not to see
+    many attributes, or attributes not related to queries since they are
+    set on the fly from the `queries` dictionary.
+
+    Available attributes:
+
+    * most_often
+    * total_queries
+    * slowest
+    * slowest_normalized
+    * slowest_avg
+    * slowest_avg_normalized
+    * weighted
+
+    """
+
+    queries = {
+            'most_often'             : "select count(id),query from logs where query!='' group by 2 order by 1 desc limit 1;",
+            'total_queries'          : "select count(*) from logs;",
+            'slowest'                : "select duration/60000.0,query from logs order by 1 desc limit 1;",
+            'slowest_normalized'     : "select sum(duration)/60000.0,query from logs group by 2 order by 1 desc limit 1;",
+            'slowest_avg'            : "select avg(duration)/60000.0,query from logs where query!='' group by 2 order by 1 desc limit 1;",
+            'slowest_avg_normalized' : "select avg(duration)/60000.0,query from logs where open='select' group by 2 order by 1 desc;",
+            'weighted'               : "select query, count(hash)*avg(duration+1) from logs group by hash having count(hash) >1 order by 2 desc;"
+
+    }
+
+    _cached = {}
+
+    def __getattr__(self, key):
+        key = self.queries.get(key)
+        if key:
+            return self._execute(key)
+        raise AttributeError, "DbReport object has not attribute %s" % key
+
+    def _execute(self, query):
+        cached = self._cached.get(query)
+        if cached:
+            return cached
+        result =  self.c.execute(query)
+        self._cached[query] = result.fetchall()
+        return result.fetchall()
