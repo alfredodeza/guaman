@@ -5,7 +5,7 @@ SCHEMA = """CREATE TABLE IF NOT EXISTS logs (id INTEGER PRIMARY KEY, hash, times
 
 
 class Database(dict):
-    
+
     def __init__(self, path, table='logs'):
         self.table       = table
         self.db_filename = path
@@ -18,7 +18,7 @@ class Database(dict):
         self.select_all    = "SELECT * from %s" % self.table
 
     def _set_database(self):
-        self.conn.row_factory = sqlite3.Row
+        self.conn.row_factory  = sqlite3.Row
         self.conn.text_factory = str
         self.conn.execute(SCHEMA)
 

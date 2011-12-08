@@ -17,16 +17,16 @@ describe "parsing csv lines":
         result = self.parser.convert_single_line(self.csv_rows)
         query = 'select * from foo'
         assert result != None
-        assert result.get('query')     == query
-        assert result.get('timestamp') == ''
-        assert result.get('user')      == ''
-        assert result.get('status')    == ''
-        assert result.get('ecode')     == ''
-        assert result.get('duration')  == 15
-        assert result.get('error')     == ''
-        assert result.get('db')        == ''
-        assert result.get('open')      == ''
-        assert result.get('hash')      == hashlib.sha256(query).hexdigest()
+        assert result[0] == hashlib.sha256(query).hexdigest()
+        assert result[1] == ''
+        assert result[2] == ''
+        assert result[3] == ''
+        assert result[4] == ''
+        assert result[5] == ''
+        assert result[6] == ''
+        assert result[7] == ''
+        assert result[8] == 15
+        assert result[9] == query
 
     it "returns the date if it matches the regex":
         self.csv_rows[0] = '1999-22-01 11:11:11'
@@ -41,8 +41,8 @@ describe "parsing csv lines":
         self.csv_rows[13] = 'statement: SELECT * FROM bar'
         result = self.parser.convert_single_line(self.csv_rows)
         assert result != None
-        assert result.get('query')    == 'select * from bar'
-        assert result.get('duration') == 0
+        assert result[-1] == 'select * from bar'
+        assert result[-2] == 0
 
     it "converts float durations to int":
         self.csv_rows[13] = "duration: 15.44 ms"
