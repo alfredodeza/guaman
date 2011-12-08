@@ -83,9 +83,6 @@ class ArgOpts(dict):
 
     def catches_help(self):
         if self.catch_help:
-            print self.catch_help
-            print self.args
-
             if [i for i in self.args if i in self.help]:
                 self.writer.write(self.catch_help+'\n')
                 self.exit()
