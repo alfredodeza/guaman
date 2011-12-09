@@ -39,7 +39,7 @@ describe "parsing arguments":
         parser.parse_args(['/bin/guaman', '--foo', '--meh'])
         assert parser.match == []
 
-    
+
     it "matches mixed values and arguments":
         parser = argopts.ArgOpts(['--foo', '--bar'])
         parser.parse_args(['/bin/guaman', '--foo', 'FOO', '--bar'])
@@ -114,7 +114,7 @@ describe "catches help":
         self.parser = argopts.ArgOpts(['--foo'])
         self.parser.writer = StringIO()
 
-    
+
     it "does not catch help if catch_help is not defined":
         self.parser.args = ['--help', '-h', 'help']
         assert self.parser.catches_help() is None
@@ -134,7 +134,7 @@ describe "catches help":
     it "catches a single dash h":
         self.parser.args = ['-h']
         self.parser.catch_help = 'this is the help menu'
-        
+
         raises SystemExit: self.parser.catches_help()
         assert self.parser.writer.getvalue() == 'this is the help menu\n'
 

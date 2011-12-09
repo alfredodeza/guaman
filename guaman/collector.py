@@ -5,7 +5,7 @@ import os
 class WantedFiles(list):
     """
     If a directory is given as input, make sure we aggregate CSV files only
-    but look for them all. 
+    but look for them all.
     If there are compressed files and the options tell us to go for them too
     uncompress them properly and lurk for CSV files there too.
     """

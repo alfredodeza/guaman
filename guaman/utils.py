@@ -4,7 +4,7 @@
 
 elephant = """
 
-PostgreSQL Query Analizer 
+PostgreSQL Query Analizer
     (as in something unpleasant done with a probe to SQL queries)
 
              _..--""-.                  .-""--.._
