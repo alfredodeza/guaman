@@ -18,6 +18,7 @@ import logging
 from guaman.parser import importer
 from guaman.argopts import ArgOpts
 from guaman.utils import elephant
+from guaman.report import Report
 
 __version__ = '0.0.1'
 
@@ -45,7 +46,7 @@ class Commands(object):
 
 
     def parse_args(self, argv):
-        options = ['--import', '--logging-level', 'report']
+        options = ['--import', '--logging-level', 'report', 'show']
         args    = ArgOpts(options)
 
         # Help and Version
@@ -60,3 +61,11 @@ class Commands(object):
         if args.get('--import'):
             importer(args['--import'])
             logging.info('All CSV files successfully imported')
+
+        if args.get('report'):
+            report = Report()
+            report.generate()
+
+        if args.get('show'):
+            report = Report()
+            report.show(args.get('show'))
