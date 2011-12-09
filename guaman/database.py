@@ -59,13 +59,13 @@ class DbReport(Database):
     """
 
     queries = {
-            'most_often'             : "select count(id),query from logs where query!='' group by 2 order by 1 desc limit 1;",
+            'most_often' : "select hash, query, count(hash) from logs group by hash having count(hash) > 1 order by 3 desc;",
             'total_queries'          : "select count(*) from logs;",
             'slowest'                : "select duration/60000.0,query from logs order by 1 desc limit 1;",
             'slowest_normalized'     : "select hash, query, sum(duration)/60000.0 from logs group by hash order by 3 desc;",
             'slowest_avg'            : "select avg(duration)/60000.0,query from logs where query!='' group by 2 order by 1 desc limit 1;",
             'slowest_avg_normalized' : "select avg(duration)/60000.0,query from logs where open='select' group by 2 order by 1 desc;",
-            'weighted'               : "select hash, query, count(hash)*avg(duration+1) from logs group by hash having count(hash) >1 order by 2 desc;"
+            'weighted'               : "select hash, query, count(hash)*avg(duration+1) from logs group by hash having count(hash) >1 order by 3 desc;"
 
     }
 
@@ -78,4 +78,10 @@ class DbReport(Database):
 
     def _execute(self, query):
         result =  self.c.execute(query)
+        return result.fetchall()
+
+    def show(self, _hash):
+        _hash = "%s%%" % _hash
+        query = "select *, count(hash) from logs where hash like ? group by hash ;"
+        result = self.c.execute(query, (_hash,))
         return result.fetchall()
