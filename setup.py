@@ -11,7 +11,7 @@ setup(
     license          = "MIT",
     scripts          = ['bin/guaman'],
     keywords         = "query, sql, analizer, log",
-    install_requires = ['konira>=0.3.0', 'argparse'],
+    install_requires = ['konira>=0.3.0', 'sqlparse'],
     long_description = """
 
 A Log Query analyzer for PostgreSQL
