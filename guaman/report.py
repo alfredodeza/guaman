@@ -53,6 +53,8 @@ class Report(object):
 
     def show(self, _hash):
         show = self.db.show(_hash)
+        if not show:
+            self.write('No hash found that matches: %s' % _hash)
         self.write('')
         for line in show:
             self.write("Hash      ==> %s" % line[1])
