@@ -91,4 +91,6 @@ def importer(path):
             db.insert(*row)
         logging.info("Inserted %s rows into database" % file_row_count)
     logging.info("Total rows inserted at import: %s" % count)
+    logging.debug("Populating the cache")
     db.populate_cache()
+    logging.info("Completed cache creation")
