@@ -2,10 +2,10 @@
 guaman:
 
 Control options:
-    --logging-level     What level of logging is desired, defaults to `info`
+    -l, --logging-level     What level of logging is desired, defaults to `info`
 
 Import options:
-    --import            Specify a directory or a path to import CSV log files
+    -i, --import        Specify a directory or a path to import CSV log files
 
 Reporting options:
     report              Reporting sub-command
@@ -46,7 +46,7 @@ class Commands(object):
 
 
     def parse_args(self, argv):
-        options = ['--import', '--logging-level', 'report', 'show']
+        options = [['-i', '--import'], ['-l', '--logging-level'], 'report', 'show']
         args    = ArgOpts(options)
 
         # Help and Version
