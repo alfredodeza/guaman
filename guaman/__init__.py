@@ -5,10 +5,14 @@ Control options:
     -l, --logging-level     What level of logging is desired, defaults to `info`
 
 Import options:
-    -i, --import        Specify a directory or a path to import CSV log files
+    -i, --import            Specify a directory or a path to import CSV log files
 
 Reporting options:
-    report              Reporting sub-command
+    report                  Reporting command
+        all                     Return all the available reports
+        weight                  Show only the weighted report
+        slowest                 Show only the report with the slowest queries
+        usage                   Return the most used queries
 
 """
 
@@ -64,7 +68,7 @@ class Commands(object):
 
         if args.get('report'):
             report = Report()
-            report.generate()
+            report.generate(args['report'])
 
         if args.get('show'):
             report = Report()
