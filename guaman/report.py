@@ -8,7 +8,7 @@ class Report(object):
 
 
     def __init__(self, limit=None, width=None):
-        self.limit = int(limit) or 11
+        self.limit = limit or 11
         self.width = width or 50
         self.db = DbReport('/tmp/importer.db')
 
@@ -73,6 +73,7 @@ class Report(object):
 
     def trim(self, line, width=None):
         width = width or self.width
+        if not line: return line
         return line[:width]
 
 
@@ -82,7 +83,7 @@ class Report(object):
 
     def three_column_body(self, iterator):
         count = 0
-        for line in iterator[:self.limit]:
+        for line in iterator[:int(self.limit)]:
             count += 1
             out_line = "%-8s %-50s - %5s" % (self.trim(line[0], width=8), self.trim(line[1]), line[2])
             self.write(out_line)

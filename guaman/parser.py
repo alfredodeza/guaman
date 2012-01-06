@@ -3,7 +3,6 @@ import csv
 import hashlib
 import logging
 import re
-import tarfile
 
 from guaman.collector import WantedFiles
 from guaman.database import Database
@@ -80,6 +79,7 @@ class ParseLines(object):
 def importer(path):
     # FIXME: Location of the database has to be a default one
     db = Database('/tmp/importer.db')
+    db._set_database(_type='cache') # Blows the cache away
     files = WantedFiles(path)
     count = 0
     for _file in files:
@@ -91,3 +91,4 @@ def importer(path):
             db.insert(*row)
         logging.info("Inserted %s rows into database" % file_row_count)
     logging.info("Total rows inserted at import: %s" % count)
+    db.populate_cache()
