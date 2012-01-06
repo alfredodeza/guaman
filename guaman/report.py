@@ -3,17 +3,29 @@ import sqlparse
 from guaman.database import DbReport
 
 
+
 class Report(object):
+
 
     def __init__(self, limit=None, width=None):
         self.limit = limit or 11
         self.width = width or 50
         self.db = DbReport('/tmp/importer.db')
 
-    def generate(self):
-        self.weighted()
-        self.slowest_normalized()
-        self.most_often()
+
+    def generate(self, _type):
+        available = {
+                'weight'  : self.weighted,
+                'slowest' : self.slowest_normalized,
+                'usage'   : self.most_often
+        }
+
+        if available.get(_type):
+            return available[_type]()
+
+        for item in available.values():
+            item()
+
 
     def weighted(self):
         weighted = self.db.weighted
@@ -22,12 +34,14 @@ class Report(object):
 
         self.three_column_body(weighted)
 
+
     def slowest_normalized(self):
         slowest = self.db.slowest_normalized
         slowest.insert(0, ('Hash', 'Query', 'Seconds'))
         self.heading("Slowest Queries ordered by execution time")
 
         self.three_column_body(slowest)
+
 
     def most_often(self):
         slowest = self.db.most_often
@@ -53,7 +67,6 @@ class Report(object):
             self.write("Times ran ==> %s" % line[11])
             self.write("Query     ==> \n\n%s" % sqlparse.format(line[10], reindent=True, keyword_case='upper'))
         self.write('')
-
 
 
     def trim(self, line, width=None):
