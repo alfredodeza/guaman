@@ -14,6 +14,8 @@ Reporting options:
         slowest                 Show only the report with the slowest queries
         usage                   Return the most used queries
 
+    show                    Display all information or a given query, needs the hash
+                            as the argument
 """
 
 import sys
