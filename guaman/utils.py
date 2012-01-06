@@ -7,7 +7,7 @@ elephant = """
 PostgreSQL Query Analizer
     (as in something unpleasant done with a probe to SQL queries)
 
-             _..--""-.                  .-""--.._
+               _..--""-.                  .-""--.._
            _.-'         \ __...----...__ /         '-._
          .'      .:::...,'              ',...:::.      '.
         (     .'``'''::;                  ;::'''``'.     )
@@ -23,6 +23,6 @@ PostgreSQL Query Analizer
                  .---./_/   \  .==.  /   \ \\
                 / '.    `-.__)       |    `"
                | =(`-.        '==.   ;
-                \  '. `-.           /
+                \  '. `-.           / let me have them queries
                  \_:_)   `"--.....-'
 """

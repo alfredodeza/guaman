@@ -8,7 +8,7 @@ class Report(object):
 
 
     def __init__(self, limit=None, width=None):
-        self.limit = limit or 11
+        self.limit = int(limit) or 11
         self.width = width or 50
         self.db = DbReport('/tmp/importer.db')
 

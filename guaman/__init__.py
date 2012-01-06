@@ -9,6 +9,7 @@ Import options:
 
 Reporting options:
     report                  Reporting command
+        --limit                 The number of queries to include per report
         all                     Return all the available reports
         weight                  Show only the weighted report
         slowest                 Show only the report with the slowest queries
@@ -52,7 +53,7 @@ class Commands(object):
 
 
     def parse_args(self, argv):
-        options = [['-i', '--import'], ['-l', '--logging-level'], 'report', 'show']
+        options = [['-i', '--import'], ['-l', '--logging-level'], 'report', 'show', '--limit']
         args    = ArgOpts(options)
 
         # Help and Version
@@ -69,7 +70,7 @@ class Commands(object):
             logging.info('All CSV files successfully imported')
 
         if args.get('report'):
-            report = Report()
+            report = Report(limit=args.get('--limit'))
             report.generate(args['report'])
 
         if args.get('show'):
