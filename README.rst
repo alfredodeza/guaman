@@ -101,6 +101,9 @@ As described in the main paragraph, it will output information in a descending
 ordered list of queries **with** hashes that can later be used to show the
 complete information gathered from a single query.
 
+By default, the ``report`` command will include the top 10 queries, you can
+alter this limit by using the ``--limit`` flag and adding a desired integer.
+
 Single query reporting
 ----------------------
 If there is a need to display all the information gathered by a single query,
