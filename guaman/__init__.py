@@ -19,10 +19,10 @@ Reporting options:
 import sys
 import logging
 
-from guaman.parser import importer
+from guaman.parser  import importer
 from guaman.argopts import ArgOpts
-from guaman.utils import elephant
-from guaman.report import Report
+from guaman.utils   import elephant
+from guaman.report  import Report
 
 __version__ = '0.0.1'
 
