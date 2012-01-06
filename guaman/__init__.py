@@ -1,11 +1,11 @@
 """
-guaman: 
+guaman:
 
 Control options:
     --logging-level     What level of logging is desired, defaults to `info`
 
 Import options:
-    -i, --import        Specify a directory or a path to import CSV log files
+    --import            Specify a directory or a path to import CSV log files
 
 Reporting options:
     report              Reporting sub-command
