@@ -73,9 +73,15 @@ class Report(object):
 
     def trim(self, line, width=None):
         width = width or self.width
-        if not line: return line
+        line = self.normalize(line)
         return line[:width]
 
+
+    def normalize(self, line):
+        """ Queries can come with new lines and lots and lots
+        of whitespace, lets make them pretty. """
+        if not line: return line
+        return line.replace('\n', '').replace('  ', '').strip()
 
     def heading(self, title):
         self.write('\n'+title+'\n')
